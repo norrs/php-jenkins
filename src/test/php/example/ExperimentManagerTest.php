@@ -5,6 +5,7 @@ namespace example;
 
 
 use PHPUnit_Framework_TestCase;
+use Psr\Log\LoggerInterface;
 use Zend\Diactoros\ServerRequest;
 use Zend\Diactoros\Uri;
 
@@ -22,15 +23,16 @@ class ExperimentManagerTest extends PHPUnit_Framework_TestCase {
         parent::setUp();
 
         $this->storageMock = $this->getMock(Storage::class, ['add', 'getExperiments']);
+        $this->loggerMock = $this->getMockBuilder(LoggerInterface::class)->getMock();
 
-        $this->e  = new ExperimentManager($this->storageMock);
+        $this->e  = new ExperimentManager($this->storageMock, $this->loggerMock);
     }
 
     public function testAddExperiment() {
 
         $experiment = new Experiment("foo");
         $this->storageMock->expects($this->once())
-            ->method('remove')
+            ->method('add')
             ->with($experiment);
 
         $this->e->add($experiment);
