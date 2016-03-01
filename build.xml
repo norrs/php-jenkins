@@ -57,7 +57,7 @@
 
 
     <target name="build"
-            depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit,-check-failure"/>
+            depends="prepare,lint,phploc-ci,pdepend,phpmd-ci,phpcs-ci,phpcpd-ci,phpunit-ci,-check-failure"/>
 
     <target name="clean" unless="clean.done" description="Cleanup build artifacts">
         <delete dir="${basedir}/build/api"/>
