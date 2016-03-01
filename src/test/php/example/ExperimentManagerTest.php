@@ -30,7 +30,7 @@ class ExperimentManagerTest extends PHPUnit_Framework_TestCase {
 
         $experiment = new Experiment("foo");
         $this->storageMock->expects($this->once())
-            ->method('add')
+            ->method('remove')
             ->with($experiment);
 
         $this->e->add($experiment);
