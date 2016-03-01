@@ -73,7 +73,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
             )
         );
     }
-
+/*
     public function testMock() {
         $logger = $this->getMock('Logger');
         $logger
@@ -84,5 +84,7 @@ class ExampleTest extends PHPUnit_Framework_TestCase {
             ->expects($this->at(1))
             ->method('info')
             ->with('An info message');
+
     }
+*/
 }

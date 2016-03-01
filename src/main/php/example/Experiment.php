@@ -41,4 +41,9 @@ class Experiment {
     {
         return true;
     }
+
+    public function getName()
+    {
+        return $this->name;
+    }
 }

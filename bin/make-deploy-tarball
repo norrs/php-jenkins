@@ -1,0 +1,72 @@
+#!/bin/sh
+# -*- php -*-
+export LANG=C
+exec php -doutput_buffering=1 $0 $@
+<?php
+ob_end_clean();
+
+$progname = basename(array_shift($argv));
+
+$parse_options = count($argv) > 0;
+
+while ($parse_options) {
+    switch ($argv[0]) {
+    default:
+        $parse_options = false;
+        break;
+    }
+}
+
+$old_cwd = getcwd();
+
+$tag = empty($argv[0]) ? 'HEAD' : $argv[0];
+
+$hash = substr(trim(`git rev-parse HEAD 2>/dev/null`), 0, 7);
+if (empty($hash)) {
+    die("$progname: unknown tag, branch or hash: $tag\n");
+}
+if (file_exists($old_cwd . '/.git/refs/tags/' . $tag)) {
+    // version tag, like "4.2.0"
+    $release = $tag;
+} else {
+    $release = $hash;
+}
+
+if (empty($release) || $release === '${release}') {
+    die("Usage: $progname {release} (or use 'ant deploy -Drelease=4.3.3')\n");
+}
+
+$tmpdir = "www-$release";
+if (file_exists($tmpdir)) {
+    die("$progname: already exists: $tmpdir\n");
+}
+
+$archive_cmd = "git archive --format=tar " .
+               "--prefix=" . escapeshellarg($tmpdir) . "/ " .
+               escapeshellarg($release) .
+               "| tar -xf -";
+
+print "Exporting $tmpdir ... ";
+system($archive_cmd, $exitcode);
+if ($exitcode != 0) {
+    die("FAILED!\n$progname: command exited with code $exitcode: $archive_cmd\n");
+}
+print "\n";
+
+$output_file = "$old_cwd/www-{$release}.tgz";
+
+system("cd " . escapeshellarg($tmpdir) . " && ant -Dcomposer.install.args=--no-dev install-deps");
+
+print "Creating $output_file ... ";
+$tar_command = "tar --exclude=.git --exclude=gen/php/cache --exclude=src/config/sites/current -czf "
+               . escapeshellarg($output_file) . " " . escapeshellarg($tmpdir);
+system($tar_command);
+print "\n";
+
+if (chdir($old_cwd)) {
+    print "Cleaning up dir: $tmpdir ... ";
+    system("rm -rf " . escapeshellarg($tmpdir));
+    print "\n";
+}
+
+
