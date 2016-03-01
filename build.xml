@@ -212,7 +212,7 @@
         </exec>
     </target>
 
-    <target name="package" depends="prepare">
+    <target name="package">
        <exec dir="${basedir}" executable="${basedir}/bin/make-deploy-tarball" failonerror="true">
          <arg value="${release}"/>
        </exec>
