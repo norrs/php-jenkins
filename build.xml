@@ -212,6 +212,14 @@
         </exec>
     </target>
 
+    <target name="package" depends="prepare">
+       <exec dir="${basedir}" executable="${basedir}/bin/make-deploy-tarball" failonerror="true">
+         <arg value="${release}"/>
+       </exec>
+    </target>
+
+
+   
     <target name="-check-failure">
         <fail message="PHPUnit did not finish successfully">
             <condition>
