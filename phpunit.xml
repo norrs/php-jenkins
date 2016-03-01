@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit backupGlobals="false"
+         bootstrap="src/main/php/autoload.php"
+         verbose="true">
+    <testsuites>
+        <testsuite name="example-project">
+            <directory suffix="Test.php">src/test/php</directory>
+        </testsuite>
+    </testsuites>
+    <!-- Enable according to your liking -->
+    <!--
+    <logging>
+        <log type="coverage-html" target="coverage"/> <log type="coverage-clover" target="logs/clover.xml"/>
+        <log type="coverage-crap4j" target="logs/crap4j.xml"/>
+        <log type="coverage-xml" target="logs/coverage"/>
+        <log type="junit" target="logs/junit.xml"/>
+    </logging>
+    -->
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src/main/php</directory>
+            <exclude>
+                <file>src/main/php/autoload.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

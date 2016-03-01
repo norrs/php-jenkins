@@ -1,0 +1,5 @@
+source:
+ - src/main/php
+destination: build/apigen
+deprecated: true
+todo: true
