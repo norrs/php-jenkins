@@ -4,19 +4,23 @@ namespace example;
 
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 
 class ExperimentManager {
 
     private $storage;
+    private $logger;
 
 
-    public function __construct(Storage $storage) {
+    public function __construct(Storage $storage, LoggerInterface $logger) {
         $this->storage = $storage;
+        $this->logger = $logger;
 
     }
 
     public function add(Experiment $experiment) {
         $this->storage->add($experiment);
+        $this->logger->info("Added an experiment " . $experiment->getName());
     }
 
     /**
