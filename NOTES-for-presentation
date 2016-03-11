@@ -1,0 +1,38 @@
+# Run a jenkins instance in forground.
+docker run -p 8080:8080 -p 50000:50000 jenkinsci/jenkins
+
+# catch container id with `docker ps`
+# docker exec -ti <container_id> apt update && apt install php5 ...
+image needs: php5 php5-xdebug php5-memcache ant
+
+# Set composer token to not hit rate limit 
+./composer.phar config -g github-oauth.github.com <token>
+
+# Set secret-text to env variable
+GITHUB_TOKEN
+
+# ant target (  ant -p    to list em all ) 
+ant download-composer
+./composer.phar config -g github-oauth.github.com $GITHUB_TOKEN
+./composer.phar config -g github-protocols https git ssh
+#./composer.phar config -g cache-dir /cache/composer  (useful in docker cloud spawning and volume mounting in a cache)
+ant clean
+COMPOSER_PROCESS_TIMEOUT=600 ant prepare pdepend phpcpd-ci phpcs-ci phploc-ci phpmd-ci phpunit-ci apigen 
+or simply  ant build  . see build.xml
+
+# Install additional plugins
+java -jar jenkins-cli.jar -s http://localhost:8080 git ghprb credentials-binding workflow-aggregator greenballs publish-over-ssh copyartifact
+
+# apigen buggy, this might work:
+./composer.phar require --dev --no-update 'apigen/apigen:dev-master'
+
+
+
+# PR build should have this in refs (so it know's where to find it pointers for each pr) 
++refs/pull/*:refs/remotes/origin/pr/*
+# each PR is referrenced by it sha1. can be access with variable
+${sha1}
+
+
+publish-over-ssh
+
